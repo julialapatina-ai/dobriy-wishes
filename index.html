@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Твоё пожелание ✨</title>
+  <title>Насколько вы зяряжены на добрые дела? ✨</title>
   <style>
     :root{
       --bg:#fff5f8;
@@ -11,11 +11,10 @@
       --text:#1e1e1e;
       --shadow:0 8px 25px rgba(0,0,0,0.1);
       --radius:20px;
-      --accent:#2bb673; /* мягкий «добрый» зелёный; можно менять */
     }
     *{box-sizing:border-box}
     body{
-      font-family: Arial, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", sans-serif;
+      font-family: Arial, system-ui, sans-serif;
       background: var(--bg);
       display:flex; align-items:center; justify-content:center;
       min-height:100vh; margin:0; padding:20px; text-align:center; color:var(--text);
@@ -27,20 +26,12 @@
       box-shadow:var(--shadow);
       max-width:520px; width:100%;
       font-size:22px; line-height:1.45;
-      white-space:pre-line;            /* учитывает \n как перенос */
+      white-space:pre-line;
       transition:transform .25s ease, opacity .25s ease;
       opacity:0; transform:translateY(6px);
     }
     .card.show{opacity:1; transform:translateY(0)}
     .card strong{font-weight:700}
-    .controls{margin-top:18px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap}
-    button{
-      background:var(--accent); color:#fff; border:0; border-radius:999px;
-      padding:10px 16px; font-size:16px; cursor:pointer; box-shadow:0 6px 18px rgba(43,182,115,.22);
-    }
-    button:hover{filter:brightness(.98)}
-    button:active{transform:translateY(1px)}
-    /* адаптивность */
     @media (max-width:420px){
       .card{font-size:20px; padding:26px 22px}
     }
@@ -50,13 +41,10 @@
 
   <main>
     <div class="card" id="wish"></div>
-    <div class="controls">
-      <button id="nextBtn" aria-label="Показать ещё пожелание">Ещё пожелание</button>
-    </div>
   </main>
 
   <script>
-    // Массив пожеланий: первая строка (bold) + последующий текст с \n для переносов
+    // Пожелания: жирная первая строка + текст
     const wishes = [
       {
         bold: "Заряжены на 99%.",
@@ -68,7 +56,7 @@
       },
       {
         bold: "Заряжены на 99%.",
-        text: "Остался +1% — и вы энергичны, как мультифрут Добрый.\nВнимание к коллеге работает лучше любого витаминного микса."
+        text: "+1% — и вы энергичны, как мультифрут Добрый.\nВнимание к коллеге работает лучше любого витаминного микса."
       },
       {
         bold: "Заряжены на 99%.",
@@ -81,31 +69,20 @@
     ];
 
     const wishEl = document.getElementById('wish');
-    const nextBtn = document.getElementById('nextBtn');
-    let lastIndex = -1;
-
-    function renderWish(item){
-      // Собираем HTML: жирная первая строка + переносы \n → <br>
-      wishEl.innerHTML = `<strong>${item.bold}</strong>\n${item.text}`.replace(/\n/g, "<br>");
-      // лёгкая анимация появления
-      wishEl.classList.remove('show');
-      // два рясафета, чтобы перерисовать transition при смене
-      requestAnimationFrame(()=>requestAnimationFrame(()=>wishEl.classList.add('show')));
-    }
 
     function showRandomWish(){
-      let idx = Math.floor(Math.random() * wishes.length);
-      if (wishes.length > 1 && idx === lastIndex) {
-        // избегаем повторов подряд
-        idx = (idx + 1) % wishes.length;
-      }
-      lastIndex = idx;
-      renderWish(wishes[idx]);
+      const random = wishes[Math.floor(Math.random() * wishes.length)];
+
+      // HTML: жирная строка + переносы
+      wishEl.innerHTML =
+        `<strong>${random.bold}</strong>\n${random.text}`.replace(/\n/g, "<br>");
+
+      // плавное появление
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{
+        wishEl.classList.add('show');
+      }));
     }
 
-    nextBtn.addEventListener('click', showRandomWish);
-
-    // Первое отображение
     showRandomWish();
   </script>
 
